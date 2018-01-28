@@ -8,6 +8,12 @@ namespace Splendid
 {
     class Game
     {
+        public Game(string a)
+        {
+            playCt = 1;
+            players = new Player[1] { new Player(a) };
+            alwaysDo(7);
+        } //debug only
         public Game(string a, string b)
         {
             playCt = 2;
@@ -302,7 +308,7 @@ namespace Splendid
 
             tokenMaxCheck(them);
             return true;
-        }
+        } //fully implemented
         public bool buyCard(string inp, Player them)
         {
             
@@ -310,20 +316,24 @@ namespace Splendid
             {
                 if(inp.Substring(0,1) == "a")
                 {
-                    Console.WriteLine("You bought this card!");
+                    Console.WriteLine("You want this card:");
                     Deck[2][field[2, int.Parse(inp.Substring(1, 1))]].readOut();
                     field[2, int.Parse(inp.Substring(1, 1))] = shuf[2][--field[2, 0]];
                 } else if (inp.Substring(0, 1) == "b")
                 {
-                    Console.WriteLine("You bought this card!");
+                    Console.WriteLine("You want this card:");
                     Deck[1][field[1, int.Parse(inp.Substring(1, 1))]].readOut();
                     field[1, int.Parse(inp.Substring(1, 1))] = shuf[1][--field[1, 0]];
                 }
                 else if(inp.Substring(0, 1) == "c")
                 {
-                    Console.WriteLine("You bought this card!");
+                    Console.WriteLine("You want this card:");
                     Deck[0][field[0, int.Parse(inp.Substring(1, 1))]].readOut();
                     field[0, int.Parse(inp.Substring(1, 1))] = shuf[0][--field[0, 0]];
+                }
+                else if(inp.Substring(0, 1) == "r")
+                {
+
                 }
                 else
                 {
@@ -336,6 +346,9 @@ namespace Splendid
                 Console.WriteLine("That's not a card!");
                 return false;
             }
+            // end selecting, begin buying
+            //buyCheck(temp, them);
+
             Console.WriteLine();
             displayField();
             return true;
@@ -408,12 +421,20 @@ namespace Splendid
                 Console.WriteLine("That's not a card!");
                 return false;
             }
-            them.reserved[++them.res] = temp;
-            them.stuff[0, 5]++;
+            them.reserved[them.res++] = temp;
+            if (tokens[5] > 0)
+            {
+                addToken(5, them);
+            }
             tokenMaxCheck(them);
+            Console.WriteLine();
+            Console.WriteLine("{0}'s reserved cards:", them.name);
+            them.displayRes();
+            Console.WriteLine();
             displayField();
             return true;
-        }
+        } //fully implemented
+        
         public void tokenMaxCheck(Player them)
         {
             int sum = them.tokenSum();
@@ -449,6 +470,15 @@ namespace Splendid
                     Console.WriteLine("You don't have any {0} tokens to discard!", sel);
                 }
             }
+        } //fully implemented
+        public int buyCheck(Card cd, Player them)
+        {
+            int gold = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                gold += cd.cost[i] - (them.stuff[0, i] + them.stuff[1, i]);
+            }
+            return gold;
         }
 
         private string getTokens()

@@ -11,7 +11,7 @@ namespace Splendid
         public Player(string n)
         {
             name = n;
-            reserved = new Card[3];
+            reserved = new Card[3] { new Card(2), new Card(2), new Card(2) };
         }
         public string getTokens() //for the love of fuck make a proper parser later
         {
@@ -21,6 +21,13 @@ namespace Splendid
         public int tokenSum()
         {
             return stuff[0, 0] + stuff[0, 1] + stuff[0, 2] + stuff[0, 3] + stuff[0, 4] + stuff[0, 5];
+        }
+        public void displayRes()
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                Console.WriteLine("{0}\t{1}\t{2}", reserved[0].lines[i], reserved[1].lines[i], reserved[2].lines[i]);
+            }
         }
 
         public int[,] stuff = new int[2,6]; //first row 0-5 is tokens, second 0-4 is cards, second 5 is nobles

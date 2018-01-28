@@ -16,7 +16,8 @@ namespace Splendid
         static void gamePlay()
         {
             Random r = new Random();
-            Game gameInProg = new Game("Player 1", "Player 2", "Player 3", "Player 4");
+            //Game gameInProg = new Game("Player 1", "Player 2", "Player 3", "Player 4");
+            Game gameInProg = new Game("Player 1");
             gameInProg.displayField();
             Console.WriteLine("Beginning Game:");
             while (!gameInProg.Round());
