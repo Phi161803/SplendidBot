@@ -96,7 +96,7 @@ namespace Splendid
                 }
                 for (int j = 0; j < (((4 - i) * 10) - 1) ; j++)
                 {
-                    hold = r.Next(j+1, (((4-i)*10)-1));
+                    hold = r.Next(j+1, (((4-i)*10)));
                     temp = shuf[i][j];
                     shuf[i][j] = shuf[i][hold];
                     shuf[i][hold] = temp;
@@ -143,7 +143,7 @@ namespace Splendid
                 entry.ToLower();
                 if(entry.Length > 3 && entry.Substring(0,3) == "buy")
                 {
-                    turnDone = getCard(entry.Substring(4), them);
+                    turnDone = buyCard(entry.Substring(4), them);
                 }
                 else if (entry.Length > 5 && entry.Substring(0, 5) == "token")
                 {
@@ -303,14 +303,115 @@ namespace Splendid
             tokenMaxCheck(them);
             return true;
         }
-        public bool getCard(string inp, Player them)
+        public bool buyCard(string inp, Player them)
         {
-            Console.WriteLine("You bought a \"{0}\" card!", inp);
+            
+            if(inp.Substring(1, 1) == "1" || inp.Substring(1, 1) == "2" || inp.Substring(1, 1) == "3" || inp.Substring(1, 1) == "4")
+            {
+                if(inp.Substring(0,1) == "a")
+                {
+                    Console.WriteLine("You bought this card!");
+                    Deck[2][field[2, int.Parse(inp.Substring(1, 1))]].readOut();
+                    field[2, int.Parse(inp.Substring(1, 1))] = shuf[2][--field[2, 0]];
+                } else if (inp.Substring(0, 1) == "b")
+                {
+                    Console.WriteLine("You bought this card!");
+                    Deck[1][field[1, int.Parse(inp.Substring(1, 1))]].readOut();
+                    field[1, int.Parse(inp.Substring(1, 1))] = shuf[1][--field[1, 0]];
+                }
+                else if(inp.Substring(0, 1) == "c")
+                {
+                    Console.WriteLine("You bought this card!");
+                    Deck[0][field[0, int.Parse(inp.Substring(1, 1))]].readOut();
+                    field[0, int.Parse(inp.Substring(1, 1))] = shuf[0][--field[0, 0]];
+                }
+                else
+                {
+                    Console.WriteLine("That's not a card!");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine("That's not a card!");
+                return false;
+            }
+            Console.WriteLine();
+            displayField();
             return true;
         }
         public bool reserveCard(string inp, Player them)
         {
-            Console.WriteLine("You reserved a \"{0}\" card!", inp);
+            if(them.res == 3)
+            {
+                Console.WriteLine("You can't reserve any more cards until you buy one you've already reserved!");
+                return false;
+            }
+            Card temp;
+            if (inp.Substring(1, 1) == "1" || inp.Substring(1, 1) == "2" || inp.Substring(1, 1) == "3" || inp.Substring(1, 1) == "4")
+            {
+                if (inp.Substring(0, 1) == "a")
+                {
+                    Console.WriteLine("You reserved this card!");
+                    temp = Deck[2][field[2, int.Parse(inp.Substring(1, 1))]];
+                    Deck[2][field[2, int.Parse(inp.Substring(1, 1))]].readOut();
+                    field[2, int.Parse(inp.Substring(1, 1))] = shuf[2][--field[2,0]];
+                }
+                else if (inp.Substring(0, 1) == "b")
+                {
+                    Console.WriteLine("You reserved this card!");
+                    temp = Deck[1][field[1, int.Parse(inp.Substring(1, 1))]];
+                    Deck[1][field[1, int.Parse(inp.Substring(1, 1))]].readOut();
+                    field[1, int.Parse(inp.Substring(1, 1))] = shuf[1][--field[1, 0]];
+                }
+                else if (inp.Substring(0, 1) == "c")
+                {
+                    Console.WriteLine("You reserved this card!");
+                    temp = Deck[0][field[0, int.Parse(inp.Substring(1, 1))]];
+                    Deck[0][field[0, int.Parse(inp.Substring(1, 1))]].readOut();
+                    field[0, int.Parse(inp.Substring(1, 1))] = shuf[0][--field[0, 0]];
+                }
+                else
+                {
+                    Console.WriteLine("That's not a card!");
+                    return false;
+                }
+            }
+            else if(inp.Substring(1, 1) == "0")
+            {
+                if (inp.Substring(0, 1) == "a")
+                {
+                    Console.WriteLine("You reserved this card!");
+                    temp = Deck[2][shuf[2][--field[2, 0]]];
+                    Deck[2][shuf[2][field[2,0]]].readOut();
+                }
+                else if (inp.Substring(0, 1) == "b")
+                {
+                    Console.WriteLine("You reserved this card!");
+                    temp = Deck[1][shuf[1][--field[1, 0]]];
+                    Deck[1][shuf[1][field[1, 0]]].readOut();
+                }
+                else if (inp.Substring(0, 1) == "c")
+                {
+                    Console.WriteLine("You reserved this card!");
+                    temp = Deck[0][shuf[0][--field[0, 0]]];
+                    Deck[0][shuf[0][field[0, 0]]].readOut();
+                }
+                else
+                {
+                    Console.WriteLine("That's not a card!");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine("That's not a card!");
+                return false;
+            }
+            them.reserved[++them.res] = temp;
+            them.stuff[0, 5]++;
+            tokenMaxCheck(them);
+            displayField();
             return true;
         }
         public void tokenMaxCheck(Player them)

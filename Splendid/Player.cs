@@ -11,7 +11,7 @@ namespace Splendid
         public Player(string n)
         {
             name = n;
-
+            reserved = new Card[3];
         }
         public string getTokens() //for the love of fuck make a proper parser later
         {
@@ -25,6 +25,7 @@ namespace Splendid
 
         public int[,] stuff = new int[2,6]; //first row 0-5 is tokens, second 0-4 is cards, second 5 is nobles
         public Card[] reserved;
+        public int res;
         public int prestige { get; private set; }
         public string name { get; private set; }
     }
