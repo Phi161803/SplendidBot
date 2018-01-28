@@ -20,9 +20,7 @@ namespace Splendid
             gameInProg.displayField();
             Console.WriteLine("Beginning Game:");
             while (!gameInProg.Round());
-
             Console.WriteLine("The winner is {0}!!!", gameInProg.winner.name);
         }
     }
-    
 }

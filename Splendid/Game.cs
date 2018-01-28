@@ -46,7 +46,7 @@ namespace Splendid
             int count = 0;
             Deck = new Card[4][];
             Deck[0] = new Card[41]; //tier 1
-            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\Kc314\Documents\CodeSpace\Splendid\Splendid\Resources\GreenTier.txt");
+            System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\Resources\GreenTier.txt");
             while ((line = file.ReadLine()) != null)
             {
                 Deck[0][count++] = new Card(line);
@@ -54,7 +54,7 @@ namespace Splendid
             file.Close();
             count = 0;
             Deck[1] = new Card[31]; //tier 1
-            file = new System.IO.StreamReader(@"C:\Users\Kc314\Documents\CodeSpace\Splendid\Splendid\Resources\YellowTier.txt");
+            file = new System.IO.StreamReader(@"..\..\Resources\YellowTier.txt");
             while ((line = file.ReadLine()) != null)
             {
                 Deck[1][count++] = new Card(line);
@@ -62,7 +62,7 @@ namespace Splendid
             file.Close();
             count = 0;
             Deck[2] = new Card[21]; //tier 1
-            file = new System.IO.StreamReader(@"C:\Users\Kc314\Documents\CodeSpace\Splendid\Splendid\Resources\BlueTier.txt");
+            file = new System.IO.StreamReader(@"..\..\Resources\BlueTier.txt");
             while ((line = file.ReadLine()) != null)
             {
                 Deck[2][count++] = new Card(line);
@@ -70,12 +70,13 @@ namespace Splendid
             file.Close();
             count = 0;
             Deck[3] = new Card[11]; //tier 1
-            file = new System.IO.StreamReader(@"C:\Users\Kc314\Documents\CodeSpace\Splendid\Splendid\Resources\Nobles.txt");
+            file = new System.IO.StreamReader(@"..\..\Resources\Nobles.txt");
             while ((line = file.ReadLine()) != null)
             {
                 Deck[3][count++] = new Card(line);
             }
-            Deck[0][40] = Deck[1][30] = Deck[2][20] = new Card(0);
+            Deck[0][40] = Deck[1][30] = Deck[2][20] = new Card(2);
+            Deck[3][10] = new Card(3);
             file.Close();
         }
         private void deckShuffle()

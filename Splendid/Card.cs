@@ -23,8 +23,8 @@ namespace Splendid
         public Card(int a)
         {
             lines = new string[6];
-            lines[0] = lines[1] = lines[3] = lines[4] = lines[5] = "[\t\t]";
-            lines[2] = "[\tX\t]";
+            lines[0] = lines[1] = lines[2] = lines[3] = lines[4] = lines[5] = "[\t\t]";
+            lines[a] = "[\tX\t]";
         } // empty card
 
         public void outputs()
