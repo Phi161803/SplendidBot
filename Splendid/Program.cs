@@ -46,8 +46,8 @@ namespace Splendid
                 else
                 {
                     Console.WriteLine("Enter Player Four or type \"start\":");
-                    players[2] = Console.ReadLine();
-                    if (players[2] == "start")
+                    players[3] = Console.ReadLine();
+                    if (players[3] == "start")
                     {
                         gameInProg = new Game(players[0], players[1], players[2]);
                     }

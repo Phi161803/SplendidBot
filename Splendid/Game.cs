@@ -164,7 +164,7 @@ namespace Splendid
                 {
                     turnDone = tokenGet(entry.Substring(6), them);
                 }
-                else if (entry.Length > 5 && entry.Substring(0, 5) == "field")
+                else if (entry.Length > 4 && entry.Substring(0, 5) == "field")
                 {
                     displayField();
                     continue;
@@ -172,6 +172,11 @@ namespace Splendid
                 else if (entry.Length > 7 && entry.Substring(0,7) == "reserve")
                 {
                     turnDone = reserveCard(entry.Substring(8), them);
+                }
+                else
+                {
+                    Console.WriteLine("I don't know what command that was");
+                    continue;
                 }
                 if (turnDone)
                 {
@@ -258,6 +263,8 @@ namespace Splendid
                     }
                 }
             }
+            Console.WriteLine();
+            Console.WriteLine("Available tokens: {0}", getTokens());
         }
 
         static public int colorGrab(string str)
