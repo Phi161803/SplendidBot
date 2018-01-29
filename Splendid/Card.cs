@@ -55,7 +55,7 @@ namespace Splendid
             }
             while (count > 0)
             {
-                lines[count--] = "[\t|\t]";
+                lines[count--] = "[\t\t]";
             }
                 
         }

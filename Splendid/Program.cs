@@ -27,26 +27,63 @@ namespace Splendid
         {
             string[] players = new string[4];
             Game gameInProg;
-            Console.WriteLine("Enter Player One:");
-            players[0] = Console.ReadLine();
-            Console.WriteLine("Enter Player Two:");
-            players[1] = Console.ReadLine();
+            for (; ; )
+            {
+                Console.WriteLine("Enter Player One:");
+                players[0] = Console.ReadLine();
+                if (players[0] == "start")
+                {
+                    Console.WriteLine("Please choose a different name");
+                    continue;
+                }
+                break;
+            } //p1 name
+            for(; ; )
+            {
+                Console.WriteLine("Enter Player Two:");
+                players[1] = Console.ReadLine();
+                if(players[1] == players[0] || players[1] == "start")
+                {
+                    Console.WriteLine("Please choose a different name");
+                    continue;
+                }
+                break;
+            } //p2 name
             if (players[1] == "admin")
             {
                 gameInProg = new Game(players[0]);
             }
             else
             {
-                Console.WriteLine("Enter Player Three or type \"start\":");
-                players[2] = Console.ReadLine();
+                for (; ; )
+                {
+                    Console.WriteLine("Enter Player Three or type \"start\":");
+                    players[2] = Console.ReadLine();
+                    if (players[2] == players[0] || players[2] == players[1])
+                    {
+                        Console.WriteLine("Please choose a different name");
+                        continue;
+                    }
+                    break;
+                } //p3 name
                 if (players[2] == "start")
                 {
                     gameInProg = new Game(players[0], players[1]);
                 }
                 else
                 {
-                    Console.WriteLine("Enter Player Four or type \"start\":");
-                    players[3] = Console.ReadLine();
+                    
+                    for (; ; )
+                    {
+                        Console.WriteLine("Enter Player Four or type \"start\":");
+                        players[3] = Console.ReadLine();
+                        if (players[3] == players[0] || players[3] == players[1] || players[3] == players[2])
+                        {
+                            Console.WriteLine("Please choose a different name");
+                            continue;
+                        }
+                        break;
+                    } //p4 name
                     if (players[3] == "start")
                     {
                         gameInProg = new Game(players[0], players[1], players[2]);
@@ -57,9 +94,6 @@ namespace Splendid
                     }
                 }
             }
-            //Game gameInProg = new Game("Player 1", "Player 2", "Player 3", "Player 4");
-            //Game gameInProg = new Game("Player 1");
-            gameInProg.displayField();
             Console.WriteLine("Beginning Game:");
             while (!gameInProg.Round());
             Console.WriteLine("The winner is {0}!!!", gameInProg.winner.name);

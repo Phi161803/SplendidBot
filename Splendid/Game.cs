@@ -44,6 +44,7 @@ namespace Splendid
             deckBuild();
             deckShuffle();
             fieldPlay();
+            cmd();
         }  //constructor supplement
 
         private void deckBuild()
@@ -145,6 +146,15 @@ namespace Splendid
             }
         }
 
+        private void cmd()
+        {
+            Console.WriteLine("\"token [color] [color]\" or \"token [color] [color] [color]\" to take tokens");
+            Console.WriteLine("\"buy [card]\" to buy a card");
+            Console.WriteLine("\"reserve [card]\" to reserve a card and receive a gold token");
+            Console.WriteLine("\"field\" to display the field and available cards");
+            Console.WriteLine("\"commands\" to display this list again");
+        }
+
         public void Move(Player them)
         {
             Console.WriteLine();
@@ -167,6 +177,11 @@ namespace Splendid
                 else if (entry.Length > 4 && entry.Substring(0, 5) == "field")
                 {
                     displayField();
+                    continue;
+                }
+                else if (entry.Length > 6 && entry.Substring(0, 6) == "command")
+                {
+                    cmd();
                     continue;
                 }
                 else if (entry.Length > 7 && entry.Substring(0,7) == "reserve")
@@ -215,6 +230,7 @@ namespace Splendid
         }
         public bool Round()
         {
+            displayField();
             for (int i = 0; i < playCt; i++)
             {
                 Move(players[i]);
@@ -321,6 +337,7 @@ namespace Splendid
                 addToken(num, them);
                 Console.WriteLine("You grabbed two {0} tokens!", temp[0]);
                 Console.WriteLine("You now have {0}", them.getTokens());
+                Console.WriteLine("Available tokens: {0}", getTokens());
             } //2same
             else if(temp.Length <= 2)
             {
@@ -417,7 +434,9 @@ namespace Splendid
                 }
             }
             Console.Write(". Are you sure you want to buy this card?\n");
-            if(Console.ReadLine().ToLower()[0] != 'y')
+            string tempy = "n";
+            tempy = Console.ReadLine().ToLower();
+            if (tempy.Length == 0 || tempy[0] != 'y')
             {
                 return false;
             }
