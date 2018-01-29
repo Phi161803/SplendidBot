@@ -34,6 +34,23 @@ namespace Splendid
                 Console.WriteLine("{0}\t{1}\t{2}", reserved[0].lines[i], reserved[1].lines[i], reserved[2].lines[i]);
             }
         }
+        public int[] cardCost(Card cd)
+        {
+            int[] costArr = new int[6];
+            for(int i = 0; i < 5; i++)
+            {
+                costArr[i] = cd.cost[i] - stuff[1, i];
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                if(costArr[i] > stuff[0, i])
+                {
+                    costArr[5] += (costArr[i] - stuff[0, i]);
+                    costArr[i] = stuff[0, i];
+                }
+            }
+            return costArr;
+        }
         public void cardTake(Card cd)
         {
             int col = Game.colorGrab(cd.color);

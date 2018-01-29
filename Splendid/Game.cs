@@ -164,6 +164,11 @@ namespace Splendid
                 {
                     turnDone = tokenGet(entry.Substring(6), them);
                 }
+                else if (entry.Length > 5 && entry.Substring(0, 5) == "field")
+                {
+                    displayField();
+                    continue;
+                }
                 else if (entry.Length > 7 && entry.Substring(0,7) == "reserve")
                 {
                     turnDone = reserveCard(entry.Substring(8), them);
@@ -345,7 +350,7 @@ namespace Splendid
 
             tokenMaxCheck(them);
             return true;
-        } //fully implemented
+        } //implemented
         public bool buyCard(string inp, Player them)
         {
             string set = inp.Substring(0, 1);
@@ -358,12 +363,10 @@ namespace Splendid
             {
                 if (num[0] >= 0 && num[0] <= 2 && field[num[0], num[1]] < ((4 - num[0])*10))
                 {
-                    Console.WriteLine("You want to buy this card from the field:");
                     temp = Deck[num[0]][field[num[0], num[1]]];
                 }
-                else if(inp.Substring(0, 1) == "r" && num[1] < them.res)
+                else if(inp.Substring(0, 1) == "r" && num[1] <= them.res)
                 {
-                    Console.WriteLine("You want to buy this card from your reserves:");
                     temp = them.reserved[num[1] - 1];
                 }
                 else
@@ -380,17 +383,57 @@ namespace Splendid
             // end selecting, begin buying
             //buyCheck(temp, them);
 
-            //end buying, begin take/draw
-            them.cardTake(temp);
+            int[] cardCost = them.cardCost(temp);
+            if(them.stuff[0,5] < cardCost[5])
+            {
+                Console.WriteLine("You don't have enough tokens to buy that card!");
+                return false;
+            }
+            Console.Write("You want to buy this card from ");
             if(num[0] >= 0)
             {
-                Deck[num[0]][field[num[0], num[1]]].readOut();
+                Console.Write("the field:\n\n");
+            }
+            else
+            {
+                Console.Write("your reserves:\n\n");
+            }
+            temp.readOut();
+            Console.WriteLine();
+            Console.Write("This will cost you {0} tokens", cardCost.Sum());
+            if (cardCost[5] > 0)
+            {
+                Console.Write(" including {0} gold token", cardCost[5]);
+                if(cardCost[5] > 1)
+                {
+                    Console.Write("s");
+                }
+            }
+            Console.Write(". Are you sure you want to buy this card?\n");
+            if(Console.ReadLine().ToLower()[0] != 'y')
+            {
+                return false;
+            }
+            //end buying, begin take/draw
+            them.cardTake(temp);
+            for(int i = 0; i < 6; i++)
+            {
+                while (cardCost[i] > 0)
+                {
+                    dropToken(i, them);
+                    cardCost[i]--;
+                }
+            }
+            Console.WriteLine("You now have {0}", them.getTokens());
+            Console.WriteLine("You now have {0}", them.getCards());
+            if (num[0] >= 0)
+            {
                 drawCard(num[0], num[1]);
                 Console.WriteLine();
                 displayField();
-            } else
+            }
+            else
             {
-                them.reserved[num[1] - 1].readOut();
                 for (; num[1] < 3; num[1]++)
                 {
                     them.reserved[num[1] - 1] = them.reserved[num[1]];
@@ -399,7 +442,7 @@ namespace Splendid
                 them.res--;
             }
             return true;
-        }
+        } //implemented
         public bool reserveCard(string inp, Player them)
         {
             if(them.res == 3)
@@ -480,7 +523,7 @@ namespace Splendid
             Console.WriteLine();
             displayField();
             return true;
-        } //fully implemented
+        } //implemented
         
         public void tokenMaxCheck(Player them)
         {
@@ -510,14 +553,14 @@ namespace Splendid
                 if(them.stuff[0,col] > 0)
                 {
                     dropToken(col, them);
-                    Console.WriteLine("You have discarded a {0} token. You now have {1} tokens", sel, sum-1);
+                    Console.WriteLine("You have discarded a {0} token. You now have {1} tokens", sel, --sum);
                 }
                 else
                 {
                     Console.WriteLine("You don't have any {0} tokens to discard!", sel);
                 }
             }
-        } //fully implemented
+        } //implemented
         public int buyCheck(Card cd, Player them)
         {
             int gold = 0;
@@ -526,7 +569,7 @@ namespace Splendid
                 gold += cd.cost[i] - (them.stuff[0, i] + them.stuff[1, i]);
             }
             return gold;
-        }
+        } //defunct
 
         private string getTokens()
         {
