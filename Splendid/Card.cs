@@ -25,6 +25,7 @@ namespace Splendid
             lines = new string[6];
             lines[0] = lines[1] = lines[2] = lines[3] = lines[4] = lines[5] = "[\t\t]";
             lines[a] = "[\tX\t]";
+            cost = new int[5] { 100, 100, 100, 100, 100 };
         } // empty card
 
         public void outputs()
@@ -65,6 +66,17 @@ namespace Splendid
                 Console.WriteLine(lines[i]);
             }
             //Console.Write("{0}\t{1}\n{2} {3} {4} {5} {6}", color, prestige, cost[0], cost[1], cost[2], cost[3], cost[4]);
+        }
+        public void readOut(int a)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                if (i == 1)
+                {
+                    continue;
+                }
+                Console.WriteLine(lines[i]);
+            }
         }
 
         public string color { get; private set; }

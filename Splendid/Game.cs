@@ -112,9 +112,16 @@ namespace Splendid
         }
         private void fieldPlay()
         {
-            for(int i = 4; i >= 4 - playCt; i--)
+            for(int i = 4; i >= 0; i--)
             {
-                field[3, i] = shuf[3][i];
+                if (i >= 4 - playCt)
+                {
+                    field[3, i] = shuf[3][i];
+                }
+                else
+                {
+                    field[3, i] = 10;
+                }
             }
             field[2, 0] = 20;
             field[1, 0] = 30;
@@ -145,16 +152,17 @@ namespace Splendid
             for (; ; ) // the move
             {
                 Console.WriteLine("{0}, it's your turn!", them.name);
+                them.listAll();
                 string entry = Console.ReadLine();
-                entry.ToLower();
-                if(entry.Length > 3 && entry.Substring(0,3) == "buy")
+                entry = entry.ToLower();
+                
+                if (entry.Length > 3 && entry.Substring(0,3) == "buy")
                 {
                     turnDone = buyCard(entry.Substring(4), them);
                 }
                 else if (entry.Length > 5 && entry.Substring(0, 5) == "token")
                 {
                     turnDone = tokenGet(entry.Substring(6), them);
-
                 }
                 else if (entry.Length > 7 && entry.Substring(0,7) == "reserve")
                 {
@@ -167,11 +175,33 @@ namespace Splendid
                 
             }
 
-
-            for(; ;) // noble check, currently unused
+            for(int i = 0; i < 5; i++)
             {
-                break;
-            }
+                bool nobleGet = true;
+                for (int j = 0; j < 5; j++)
+                {
+                    if (Deck[3][field[3, i]].cost[j] > them.stuff[1, j])
+                    {
+                        nobleGet = false;
+                    }
+                }
+                if (nobleGet)
+                {
+                    them.cardTake(Deck[3][field[3, i]]);
+                    Console.WriteLine("You got this Noble:");
+                    Deck[3][field[3, i]].readOut(0);
+                    field[3, i] = 10;
+                    break;
+                }
+            } // noble check
+            if (them.prestige >= 15)
+            {
+                if(winner == null || winner.prestige < them.prestige)
+                {
+                    winner = them;
+                    Console.WriteLine("{0} has enough points to win! Everyone else has until the end of this round to beat {1} Prestige!", winner.name, winner.prestige);
+                }
+            } //win check
         }
         public bool Round()
         {
@@ -186,17 +216,18 @@ namespace Splendid
             Console.WriteLine();
             Console.WriteLine("---------------------------------------------------");
             Console.WriteLine("End of Round {0}", rounds++);
-            for(int i = 0; i < playCt; i++)
-            {
-                Console.WriteLine("{0} has {1}", players[i].name, players[i].getTokens());
-            }
-            Console.WriteLine("Available tokens: {0}", getTokens());
-            Console.WriteLine("---------------------------------------------------");
-            Console.WriteLine();
             if (winner == null)
             {
+                for (int i = 0; i < playCt; i++)
+                {
+                    Console.WriteLine("{0} has {1}", players[i].name, players[i].getTokens());
+                }
+                Console.WriteLine("Available tokens: {0}", getTokens());
+                Console.WriteLine("---------------------------------------------------");
+                Console.WriteLine();
                 return false;
             }
+            Console.WriteLine("{0} has won the game with {1} Prestige!", winner.name, winner.prestige);
             return true;
         }
         public void displayField()
@@ -224,28 +255,34 @@ namespace Splendid
             }
         }
 
-        public int colorGrab(string str)
+        static public int colorGrab(string str)
         {
-            str.ToLower();
-            if(str == "white"){
+            str = str.ToLower();
+            if(str == "white")
+            {
                 return 0;
             }
-            else if (str == "blue"){
+            else if (str == "blue")
+            {
                 return 1;
             }
-            else if (str == "green"){
+            else if (str == "green")
+            {
                 return 2;
             }
-            else if (str == "red"){
+            else if (str == "red" || str == "red ")
+            {
                 return 3;
             }
-            else if (str == "black"){
+            else if (str == "black")
+            {
                 return 4;
             }
             else if (str == "gold")
             {
                 return 5;
-            } else
+            }
+            else
             {
                 return 6;
             }
@@ -311,29 +348,23 @@ namespace Splendid
         } //fully implemented
         public bool buyCard(string inp, Player them)
         {
-            
-            if(inp.Substring(1, 1) == "1" || inp.Substring(1, 1) == "2" || inp.Substring(1, 1) == "3" || inp.Substring(1, 1) == "4")
+            string set = inp.Substring(0, 1);
+            int[] num = new int[2];
+            num[1] = 5;
+            num[0] = 'c' - set.ToCharArray()[0];
+            int.TryParse(inp.Substring(1, 1), out num[1]);
+            Card temp;
+            if (num[1] > 0 || num[1] < 5)
             {
-                if(inp.Substring(0,1) == "a")
+                if (num[0] >= 0 && num[0] <= 2 && field[num[0], num[1]] < ((4 - num[0])*10))
                 {
-                    Console.WriteLine("You want this card:");
-                    Deck[2][field[2, int.Parse(inp.Substring(1, 1))]].readOut();
-                    field[2, int.Parse(inp.Substring(1, 1))] = shuf[2][--field[2, 0]];
-                } else if (inp.Substring(0, 1) == "b")
-                {
-                    Console.WriteLine("You want this card:");
-                    Deck[1][field[1, int.Parse(inp.Substring(1, 1))]].readOut();
-                    field[1, int.Parse(inp.Substring(1, 1))] = shuf[1][--field[1, 0]];
+                    Console.WriteLine("You want to buy this card from the field:");
+                    temp = Deck[num[0]][field[num[0], num[1]]];
                 }
-                else if(inp.Substring(0, 1) == "c")
+                else if(inp.Substring(0, 1) == "r" && num[1] < them.res)
                 {
-                    Console.WriteLine("You want this card:");
-                    Deck[0][field[0, int.Parse(inp.Substring(1, 1))]].readOut();
-                    field[0, int.Parse(inp.Substring(1, 1))] = shuf[0][--field[0, 0]];
-                }
-                else if(inp.Substring(0, 1) == "r")
-                {
-
+                    Console.WriteLine("You want to buy this card from your reserves:");
+                    temp = them.reserved[num[1] - 1];
                 }
                 else
                 {
@@ -349,8 +380,24 @@ namespace Splendid
             // end selecting, begin buying
             //buyCheck(temp, them);
 
-            Console.WriteLine();
-            displayField();
+            //end buying, begin take/draw
+            them.cardTake(temp);
+            if(num[0] >= 0)
+            {
+                Deck[num[0]][field[num[0], num[1]]].readOut();
+                drawCard(num[0], num[1]);
+                Console.WriteLine();
+                displayField();
+            } else
+            {
+                them.reserved[num[1] - 1].readOut();
+                for (; num[1] < 3; num[1]++)
+                {
+                    them.reserved[num[1] - 1] = them.reserved[num[1]];
+                }
+                them.reserved[2] = new Card(2);
+                them.res--;
+            }
             return true;
         }
         public bool reserveCard(string inp, Player them)

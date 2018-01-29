@@ -10,7 +10,17 @@ namespace Splendid
     {
         static void Main(string[] args)
         {
-            gamePlay();
+            while (true)
+            {
+                gamePlay();
+                Console.WriteLine("Play again?");
+                if(Console.ReadLine().ToLower()[0] == 'y')
+                {
+                    continue;
+                }
+                break;
+            }
+            
         }
 
         static void gamePlay()
