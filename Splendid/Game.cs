@@ -151,6 +151,10 @@ namespace Splendid
             Console.WriteLine("\"token [color] [color]\" or \"token [color] [color] [color]\" to take tokens");
             Console.WriteLine("\"buy [card]\" to buy a card");
             Console.WriteLine("\"reserve [card]\" to reserve a card and receive a gold token");
+            Console.WriteLine("Cards follow the following format:");
+            Console.WriteLine("A1 | A2 | A3 | A4");
+            Console.WriteLine("B1 | B2 | B3 | B4");
+            Console.WriteLine("C1 | C2 | C3 | C4");
             Console.WriteLine("\"field\" to display the field and available cards");
             Console.WriteLine("\"commands\" to display this list again");
         }
@@ -161,6 +165,7 @@ namespace Splendid
             bool turnDone = false;
             for (; ; ) // the move
             {
+                displayField();
                 Console.WriteLine("{0}, it's your turn!", them.name);
                 them.listAll();
                 string entry = Console.ReadLine();
@@ -179,7 +184,7 @@ namespace Splendid
                     displayField();
                     continue;
                 }
-                else if (entry.Length > 6 && entry.Substring(0, 6) == "command")
+                else if (entry.Length > 6 && entry.Substring(0, 7) == "command")
                 {
                     cmd();
                     continue;
@@ -230,11 +235,11 @@ namespace Splendid
         }
         public bool Round()
         {
-            displayField();
             for (int i = 0; i < playCt; i++)
             {
                 Move(players[i]);
             }
+            Console.Clear();
             return EndRound();
         }
         public bool EndRound()
@@ -246,10 +251,11 @@ namespace Splendid
             {
                 for (int i = 0; i < playCt; i++)
                 {
-                    Console.WriteLine("{0} has {1}", players[i].name, players[i].getTokens());
+                    players[i].listAll(1);
                 }
-                Console.WriteLine("Available tokens: {0}", getTokens());
-                Console.WriteLine("---------------------------------------------------");
+                Console.Write("Available tokens: ");
+                getTokens();
+                Console.WriteLine("\n---------------------------------------------------");
                 Console.WriteLine();
                 return false;
             }
@@ -263,24 +269,27 @@ namespace Splendid
             {
                 Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", Deck[3][field[3, 0]].lines[i], Deck[3][field[3, 1]].lines[i], Deck[3][field[3, 2]].lines[i], Deck[3][field[3, 3]].lines[i], Deck[3][field[3, 4]].lines[i]);
             }
+            Console.WriteLine();
             for(int i = 2; i >= 0; i--)
             {
-                Console.WriteLine();
+                Console.WriteLine("\n\t\t\t\t\t{0}1\t\t\t{0}2\t\t\t{0}3\t\t\t{0}4", (char)('C'-i));
                 for (int j = 0; j < 6; j++)
                 {
                     if (j == 2)
                     {
-                        Console.WriteLine("[\t/{0}\t]\t{1}\t{2}\t{3}\t{4}", field[i, 0], Deck[i][field[i, 1]].lines[j], Deck[i][field[i, 2]].lines[j], Deck[i][field[i, 3]].lines[j], Deck[i][field[i, 4]].lines[j]);
+                        Console.WriteLine("[\t/{0}\t]\t\t{1}\t{2}\t{3}\t{4}", field[i, 0], Deck[i][field[i, 1]].lines[j], Deck[i][field[i, 2]].lines[j], Deck[i][field[i, 3]].lines[j], Deck[i][field[i, 4]].lines[j]);
 
                     }
                     else
                     {
-                        Console.WriteLine("[\t\t]\t{0}\t{1}\t{2}\t{3}", Deck[i][field[i, 1]].lines[j], Deck[i][field[i, 2]].lines[j], Deck[i][field[i, 3]].lines[j], Deck[i][field[i, 4]].lines[j]);
+                        Console.WriteLine("[\t\t]\t\t{0}\t{1}\t{2}\t{3}", Deck[i][field[i, 1]].lines[j], Deck[i][field[i, 2]].lines[j], Deck[i][field[i, 3]].lines[j], Deck[i][field[i, 4]].lines[j]);
                     }
                 }
             }
             Console.WriteLine();
-            Console.WriteLine("Available tokens: {0}", getTokens());
+            Console.Write("Available tokens: ");
+            getTokens();
+            Console.WriteLine();
         }
 
         static public int colorGrab(string str)
@@ -337,7 +346,6 @@ namespace Splendid
                 addToken(num, them);
                 Console.WriteLine("You grabbed two {0} tokens!", temp[0]);
                 Console.WriteLine("You now have {0}", them.getTokens());
-                Console.WriteLine("Available tokens: {0}", getTokens());
             } //2same
             else if(temp.Length <= 2)
             {
@@ -362,7 +370,8 @@ namespace Splendid
                 }
                 else if(tokens[tempy[0]] == 0 || tokens[tempy[1]] == 0 || tokens[tempy[2]] == 0)
                 {
-                    Console.WriteLine("There are no more tokens of that color! Available tokens are: {0}", getTokens());
+                    Console.Write("There are no more tokens of that color! Available tokens are: ");
+                    getTokens();
                     return false;
                 }
                 addToken(tempy[0], them);
@@ -383,7 +392,7 @@ namespace Splendid
             num[0] = 'c' - set.ToCharArray()[0];
             int.TryParse(inp.Substring(1, 1), out num[1]);
             Card temp;
-            if (num[1] > 0 || num[1] < 5)
+            if (num[1] > 0 && num[1] < 5)
             {
                 if (num[0] >= 0 && num[0] <= 2 && field[num[0], num[1]] < ((4 - num[0])*10))
                 {
@@ -433,7 +442,7 @@ namespace Splendid
                     Console.Write("s");
                 }
             }
-            Console.Write(". Are you sure you want to buy this card?\n");
+            Console.Write(". Are you sure you want to buy this card? [Y/N]\n");
             string tempy = "n";
             tempy = Console.ReadLine().ToLower();
             if (tempy.Length == 0 || tempy[0] != 'y')
@@ -455,8 +464,6 @@ namespace Splendid
             if (num[0] >= 0)
             {
                 drawCard(num[0], num[1]);
-                Console.WriteLine();
-                displayField();
             }
             else
             {
@@ -597,10 +604,27 @@ namespace Splendid
             return gold;
         } //defunct
 
-        private string getTokens()
+        private void getTokens()
         {
-            string outie = $"{tokens[0]} white tokens, {tokens[1]} blue tokens, {tokens[2]} green tokens, {tokens[3]} red tokens, {tokens[4]} black tokens, and {tokens[5]} gold tokens";
-            return outie;
+            //string outie = $"{tokens[0]} white tokens, {tokens[1]} blue tokens, {tokens[2]} green tokens, {tokens[3]} red tokens, {tokens[4]} black tokens, and {tokens[5]} gold tokens";
+            //return outie;
+            Console.Write("{0} white tokens, ", tokens[0]);
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.Write("{0} blue tokens", tokens[1]);
+            Console.ResetColor();
+            Console.Write(", ");
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.Write("{0} green tokens", tokens[2]);
+            Console.ResetColor();
+            Console.Write(", ");
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.Write("{0} red tokens", tokens[3]);
+            Console.ResetColor();
+            Console.Write(", {0} black tokens, and ", tokens[4]);
+            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.Write("{0} gold tokens", tokens[5]);
+            Console.ResetColor();
+            Console.WriteLine();
         }
         private void addToken(int tokencol, Player them)
         {

@@ -20,8 +20,46 @@ namespace Splendid
         }
         public string getCards()
         {
-            string outie = $"{stuff[1, 0]} white cards, {stuff[1, 1]} blue cards, {stuff[1, 2]} green cards, {stuff[1, 3]} red cards, {stuff[1, 4]} black cards, and {stuff[1, 5]} nobles";
+            string outie = $"{stuff[1, 0]} white cards,  {stuff[1, 1]} blue cards,  {stuff[1, 2]} green cards,  {stuff[1, 3]} red cards,  {stuff[1, 4]} black cards,  and {stuff[1, 5]} nobles";
             return outie;
+        }
+
+        public void printTokens()
+        {
+            Console.Write($"{stuff[0, 0]} white tokens, ");
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.Write($"{stuff[0, 1]} blue tokens");
+            Console.ResetColor();
+            Console.Write(", ");
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.Write($"{stuff[0, 2]} green tokens");
+            Console.ResetColor();
+            Console.Write(", ");
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.Write($"{stuff[0, 3]} red tokens");
+            Console.ResetColor();
+            Console.Write($", {stuff[0, 4]} black tokens, and ");
+            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.Write($"{stuff[0, 5]} gold tokens");
+            Console.ResetColor();
+            Console.WriteLine();
+
+        }
+        public void printCards()
+        {
+            Console.Write($"{stuff[1, 0]} white cards,  ");
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.Write($"{stuff[1, 1]} blue cards");
+            Console.ResetColor();
+            Console.Write(",  ");
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.Write($"{stuff[1, 2]} green cards");
+            Console.ResetColor();
+            Console.Write(",  ");
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.Write($"{stuff[1, 3]} red cards");
+            Console.ResetColor();
+            Console.Write($",  {stuff[1, 4]} black cards,  and {stuff[1, 5]} Nobles");
         }
         public int tokenSum()
         {
@@ -40,6 +78,10 @@ namespace Splendid
             for(int i = 0; i < 5; i++)
             {
                 costArr[i] = cd.cost[i] - stuff[1, i];
+                if(costArr[i] < 0)
+                {
+                    costArr[i] = 0;
+                }
             }
             for (int i = 0; i < 5; i++)
             {
@@ -64,16 +106,22 @@ namespace Splendid
 
         public void listAll()
         {
-            Console.WriteLine("You have {0}", getTokens());
-            Console.WriteLine("You have {0}", getCards());
+            Console.Write("You have ");
+            printTokens();
+            Console.Write("You have ");
+            printCards();
             Console.WriteLine("You have {0} Prestige and are {1} away from winning", prestige, 15-prestige);
             Console.WriteLine("You are reserving these cards:");
+            Console.WriteLine("\tR1\t\t\tR2\t\t\tR3");
             displayRes();
         }
         public void listAll(int a)
         {
-            Console.WriteLine("{0} has {1}", name, getTokens());
-            Console.WriteLine("{0} has {1}", name, getCards());
+            Console.Write("{0} has ", name);
+            printTokens();
+            Console.Write("{0} has ", name);
+            printCards();
+            Console.WriteLine("{0} has {1} Prestige and is {2} away from winning", name, prestige, 15 - prestige);
             Console.WriteLine("{0} is reserving these cards:", name);
             displayRes();
         }
