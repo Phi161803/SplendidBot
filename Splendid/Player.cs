@@ -42,8 +42,8 @@ namespace Splendid
             Console.BackgroundColor = ConsoleColor.DarkYellow;
             Console.Write($"{stuff[0, 5]} gold tokens");
             Console.ResetColor();
+            Console.Write(" ");
             Console.WriteLine();
-
         }
         public void printCards()
         {
@@ -59,7 +59,7 @@ namespace Splendid
             Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.Write($"{stuff[1, 3]} red cards");
             Console.ResetColor();
-            Console.Write($",  {stuff[1, 4]} black cards,  and {stuff[1, 5]} Nobles");
+            Console.WriteLine($",  {stuff[1, 4]} black cards,  and {stuff[1, 5]} Nobles");
         }
         public int tokenSum()
         {
@@ -69,7 +69,16 @@ namespace Splendid
         {
             for (int i = 0; i < 6; i++)
             {
-                Console.WriteLine("{0}\t{1}\t{2}", reserved[0].lines[i], reserved[1].lines[i], reserved[2].lines[i]);
+                for(int j = 0; j < 3; j++)
+                {
+                    reserved[j].readLine(i);
+                    if (j < 2)
+                    {
+                        Console.Write("       ");
+                    }
+                }
+                Console.WriteLine();
+                //Console.WriteLine("{0}\t{1}\t{2}", reserved[0].lines[i], reserved[1].lines[i], reserved[2].lines[i]);
             }
         }
         public int[] cardCost(Card cd)

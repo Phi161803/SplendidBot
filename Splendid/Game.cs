@@ -158,6 +158,15 @@ namespace Splendid
             Console.WriteLine("\"field\" to display the field and available cards");
             Console.WriteLine("\"commands\" to display this list again");
         }
+        private void showAll()
+        {
+            for (int i = 0; i < playCt; i++)
+            {
+                players[i].listAll(1);
+            }
+            Console.Write("Available tokens: ");
+            getTokens();
+        }
 
         public void Move(Player them)
         {
@@ -174,6 +183,10 @@ namespace Splendid
                 if (entry.Length > 3 && entry.Substring(0,3) == "buy")
                 {
                     turnDone = buyCard(entry.Substring(4), them);
+                }
+                else if (entry.Length > 4 && entry.Substring(0, 5) == "take")
+                {
+                    turnDone = tokenGet(entry.Substring(5), them);
                 }
                 else if (entry.Length > 5 && entry.Substring(0, 5) == "token")
                 {
@@ -219,7 +232,7 @@ namespace Splendid
                 {
                     them.cardTake(Deck[3][field[3, i]]);
                     Console.WriteLine("You got this Noble:");
-                    Deck[3][field[3, i]].readOut(0);
+                    Deck[3][field[3, i]].readOut();
                     field[3, i] = 10;
                     break;
                 }
@@ -229,7 +242,10 @@ namespace Splendid
                 if(winner == null || winner.prestige < them.prestige)
                 {
                     winner = them;
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Black;
                     Console.WriteLine("{0} has enough points to win! Everyone else has until the end of this round to beat {1} Prestige!", winner.name, winner.prestige);
+                    Console.ResetColor();
                 }
             } //win check
         }
@@ -249,41 +265,67 @@ namespace Splendid
             Console.WriteLine("End of Round {0}", rounds++);
             if (winner == null)
             {
-                for (int i = 0; i < playCt; i++)
-                {
-                    players[i].listAll(1);
-                }
-                Console.Write("Available tokens: ");
-                getTokens();
+                showAll();
                 Console.WriteLine("\n---------------------------------------------------");
                 Console.WriteLine();
                 return false;
             }
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.WriteLine("{0} has won the game with {1} Prestige!", winner.name, winner.prestige);
+            Console.ResetColor();
             return true;
         }
         public void displayField()
         {
-            Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", Deck[3][field[3, 0]].lines[0], Deck[3][field[3, 1]].lines[0], Deck[3][field[3, 2]].lines[0], Deck[3][field[3, 3]].lines[0], Deck[3][field[3, 4]].lines[0]);
+            /*Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", Deck[3][field[3, 0]].lines[0], Deck[3][field[3, 1]].lines[0], Deck[3][field[3, 2]].lines[0], Deck[3][field[3, 3]].lines[0], Deck[3][field[3, 4]].lines[0]);
             for(int i = 2; i < 6; i++)
             {
                 Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", Deck[3][field[3, 0]].lines[i], Deck[3][field[3, 1]].lines[i], Deck[3][field[3, 2]].lines[i], Deck[3][field[3, 3]].lines[i], Deck[3][field[3, 4]].lines[i]);
-            }
-            Console.WriteLine();
+            }*/
+            for(int i = 0; i < 6; i++)
+            {
+                if (i == 1) continue;
+                for(int j = 0; j < 5; j++)
+                {
+                    Deck[3][field[3, j]].readLine(i);
+                    if(j != 4)
+                    {
+                        Console.Write("       ");
+                    }
+                }
+                Console.WriteLine();
+            } // the nobles
             for(int i = 2; i >= 0; i--)
             {
-                Console.WriteLine("\n\t\t\t\t\t{0}1\t\t\t{0}2\t\t\t{0}3\t\t\t{0}4", (char)('C'-i));
+                Console.Write("\n".PadRight(17));
+                for(int j = 1; j < 5; j++)
+                {
+                    Console.Write(((char)('C'-i)).ToString().PadLeft(24));
+                    Console.Write(j);
+                }
+                Console.WriteLine();
+                //Console.WriteLine("\n\t\t\t\t\t{0}1\t\t\t{0}2\t\t\t{0}3\t\t\t{0}4", (char)('C'-i));
                 for (int j = 0; j < 6; j++)
                 {
                     if (j == 2)
                     {
-                        Console.WriteLine("[\t/{0}\t]\t\t{1}\t{2}\t{3}\t{4}", field[i, 0], Deck[i][field[i, 1]].lines[j], Deck[i][field[i, 2]].lines[j], Deck[i][field[i, 3]].lines[j], Deck[i][field[i, 4]].lines[j]);
+                        string temp = $"/{field[i, 0]}";
+                        Console.Write("[".PadRight(8) + temp.PadRight(8) + "]".PadRight(8));
+                        //Console.WriteLine("[\t/{0}\t]\t\t{1}\t{2}\t{3}\t{4}", field[i, 0], Deck[i][field[i, 1]].lines[j], Deck[i][field[i, 2]].lines[j], Deck[i][field[i, 3]].lines[j], Deck[i][field[i, 4]].lines[j]);
 
                     }
                     else
                     {
-                        Console.WriteLine("[\t\t]\t\t{0}\t{1}\t{2}\t{3}", Deck[i][field[i, 1]].lines[j], Deck[i][field[i, 2]].lines[j], Deck[i][field[i, 3]].lines[j], Deck[i][field[i, 4]].lines[j]);
+                        Console.Write("[".PadRight(16) + "]".PadRight(8));
+                        //Console.WriteLine("[\t\t]\t\t{0}\t{1}\t{2}\t{3}", Deck[i][field[i, 1]].lines[j], Deck[i][field[i, 2]].lines[j], Deck[i][field[i, 3]].lines[j], Deck[i][field[i, 4]].lines[j]);
                     }
+                    for(int k = 1; k < 5; k++)
+                    {
+                        Console.Write("        ");
+                        Deck[i][field[i, k]].readLine(j);
+                    }
+                    Console.WriteLine();
                 }
             }
             Console.WriteLine();
@@ -542,6 +584,16 @@ namespace Splendid
             else
             {
                 Console.WriteLine("That's not a card!");
+                return false;
+            }
+            Console.Write("You want to reserve this card from the field:\n\n");
+            temp.readOut();
+            Console.WriteLine();
+            Console.Write("This will also get you one gold token. Is this what you want? [Y/N]");
+            string tempy = "n";
+            tempy = Console.ReadLine().ToLower();
+            if (tempy.Length == 0 || tempy[0] != 'y')
+            {
                 return false;
             }
             them.reserved[them.res++] = temp;
